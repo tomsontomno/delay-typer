@@ -1,10 +1,10 @@
 <div align="center">
   <img src="data/icons/io.github.delaytyper.png" width="128" height="128" alt="Delay Typer icon"/>
   <h1>Delay Typer</h1>
-  <p><strong>Schedule text to be automatically typed into any window — at any time you choose.</strong></p>
+  <p><strong>Schedule text to be automatically typed into any window, at any time you choose.</strong></p>
   <p>
     <img alt="Platform: Linux" src="https://img.shields.io/badge/platform-Linux-blue?logo=linux&logoColor=white"/>
-    <img alt="Wayland" src="https://img.shields.io/badge/Wayland-native-brightgreen?logo=wayland"/>
+    <img alt="Wayland" src="https://img.shields.io/badge/Wayland-native-brightgreen"/>
     <img alt="Python 3.10+" src="https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white"/>
     <img alt="GTK4 + Adwaita" src="https://img.shields.io/badge/GTK4-Adwaita-informational?logo=gnome&logoColor=white"/>
     <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green"/>
@@ -13,118 +13,117 @@
 
 ---
 
+## Install (one command)
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/tomsontomno/delay-typer/main/install.sh)
+```
+
+This installs all dependencies, sets up the desktop launcher, and adds a `delay-typer` command to your terminal. No CS degree required.
+
+> **Requires:** Ubuntu / Debian with Wayland (GNOME). Tested on Ubuntu 22.04+.
+
+---
+
 ## What is Delay Typer?
 
 Delay Typer is a native **GNOME desktop application** that lets you schedule text to be automatically typed into any focused window at a specific date and time.
 
 **Real-world use cases:**
-- Sending a message at a precise moment without being at the computer
-- Automating keyboard input for applications that don't support scripting
-- Scheduling form submissions, chat messages, or terminal commands
-- Anything that needs "type this, exactly at this time"
+- Send a message at a precise moment without being at your computer
+- Automate keyboard input for applications that don't support scripting
+- Schedule form submissions, chat messages, or terminal commands
+- Anything that needs "type this text, exactly at this time"
 
-It runs **natively on Wayland** (including GNOME on Ubuntu, Fedora, etc.) using `/dev/uinput` directly — no X11 compatibility layer needed.
+It runs **natively on Wayland** (including GNOME on Ubuntu, Fedora, etc.) using `/dev/uinput` directly — no X11 layer needed.
 
 ---
 
 ## Features
 
 - **Scheduled typing** — pick a date and time, Delay Typer handles the rest
-- **Multiple tasks** — queue as many typing tasks as you need, they run sequentially
-- **Wayland-native** — uses `wl-clipboard` + `evdev` `/dev/uinput` instead of the blocked virtual keyboard protocol
+- **Multiple tasks** — queue as many typing tasks as you need, all run sequentially
+- **Wayland-native** — works where `xdotool` and `wtype` fail on GNOME
 - **Multiline text** — type paragraphs, not just single lines
 - **Optional Enter key** — toggle whether Enter is pressed after the text
 - **Smart date shortcuts** — Today / Tomorrow / custom calendar picker
-- **Background operation** — closing the window keeps the app running; scheduled tasks still fire
-- **Single-instance** — re-launching focuses the existing window instead of opening a duplicate
-- **Sequential execution** — concurrent tasks are serialized to avoid clipboard race conditions
+- **Background operation** — closing the window keeps tasks scheduled and running
+- **Single-instance** — re-launching focuses the existing window, no duplicates
+- **No race conditions** — concurrent tasks are serialized via a thread lock
 - **GNOME-native UI** — built with GTK4 + Libadwaita, follows your system theme
 
 ---
 
-## Screenshots
+## Manual Installation
 
-> *Add a task, close the window, walk away. Delay Typer will type your text exactly when you told it to.*
+If you prefer to install manually:
 
----
+### 1. Install dependencies
 
-## Requirements
-
-| Dependency | Purpose |
-|---|---|
-| Python 3.10+ | Runtime |
-| `python3-gi` (PyGObject) | GTK4 / Adwaita bindings |
-| `python3-evdev` | `/dev/uinput` keyboard injection |
-| `wl-clipboard` (`wl-copy`, `wl-paste`) | Clipboard-based text paste on Wayland |
-| GTK 4.0 + Libadwaita 1.0 | UI framework |
-
-**User must be in the `input` group** to access `/dev/uinput`:
 ```bash
-groups  # check if 'input' is listed
-```
-If not:
-```bash
-sudo usermod -aG input $USER  # then log out and back in
+sudo apt install python3 python3-gi python3-gi-cairo \
+                 gir1.2-gtk-4.0 gir1.2-adw-1 \
+                 python3-evdev wl-clipboard git
 ```
 
----
-
-## Installation
-
-### 1. Clone the repo
+### 2. Clone the repo
 
 ```bash
 git clone https://github.com/tomsontomno/delay-typer.git
 cd delay-typer
 ```
 
-### 2. Install system dependencies
+### 3. Add yourself to the `input` group
 
 ```bash
-sudo apt install python3-gi python3-gi-cairo gir1.2-gtk-4.0 gir1.2-adw-1 \
-                 python3-evdev wl-clipboard
+sudo usermod -aG input $USER
+# Log out and back in for this to take effect
 ```
 
-### 3. Install the desktop launcher
+### 4. Install the desktop launcher
 
 ```bash
 cp data/autotyper.desktop ~/.local/share/applications/delay-typer.desktop
+# Edit the Exec= line to point to the full path of run.py
 update-desktop-database ~/.local/share/applications/
 ```
 
-Edit the `Exec=` line in the copied `.desktop` file to point to the full path of `run.py` if you moved the project.
-
-### 4. Run
+### 5. Run
 
 ```bash
 python3 run.py
 ```
 
-Or find **Delay Typer** in your GNOME Activities search.
+Or search **Delay Typer** in GNOME Activities.
 
 ---
 
 ## How it works
 
-Wayland's security model blocks applications from injecting keyboard input via the virtual keyboard protocol (you'll see: `Compositor does not support the virtual keyboard protocol`).
+Wayland's security model blocks applications from injecting keyboard input via the virtual keyboard protocol. You've probably seen this error:
+
+```
+Compositor does not support the virtual keyboard protocol
+```
 
 Delay Typer works around this cleanly:
 
-1. **Clipboard paste approach**: text is placed on the Wayland clipboard via `wl-copy`
-2. **`/dev/uinput` injection**: `evdev` synthesizes a `Ctrl+V` keystroke to paste it
-3. **Sequential lock**: a `threading.Lock` ensures concurrent tasks don't race on the clipboard
-4. **Clipboard restore**: the original clipboard content is restored after pasting
+1. **Saves** your current clipboard
+2. **Sets** the clipboard to the scheduled text via `wl-copy`
+3. **Synthesizes** `Ctrl+V` directly via `/dev/uinput` (bypasses compositor)
+4. **Optionally** synthesizes `Enter`
+5. **Restores** the original clipboard
 
-This works with any keyboard layout and supports full Unicode text.
+This works with any keyboard layout and supports full Unicode.
 
 ```
 Task fires
     │
-    ├─ Save clipboard (wl-paste)
-    ├─ Set clipboard to task text (wl-copy)
-    ├─ Synthesize Ctrl+V via /dev/uinput
-    ├─ Optionally synthesize Enter
-    └─ Restore original clipboard (wl-copy)
+    ├─ Save clipboard        (wl-paste)
+    ├─ Set clipboard to text (wl-copy)
+    ├─ Synthesize Ctrl+V     (/dev/uinput)
+    ├─ Synthesize Enter      (/dev/uinput, optional)
+    └─ Restore clipboard     (wl-copy)
 ```
 
 ---
@@ -134,15 +133,16 @@ Task fires
 ```
 delay-typer/
 ├── run.py                  # Entry point
+├── install.sh              # One-command installer
 ├── autotyper/
 │   ├── main.py             # Adw.Application, app lifecycle
 │   ├── window.py           # Main window, task list UI
 │   ├── add_dialog.py       # Add-task modal dialog
 │   ├── task_model.py       # TypingTask dataclass + TaskStore
-│   ├── scheduler.py        # Background GLib-integrated scheduler
+│   ├── scheduler.py        # GLib-integrated background scheduler
 │   └── typer.py            # Wayland typing engine (evdev + wl-clipboard)
 └── data/
-    ├── autotyper.desktop   # .desktop launcher file
+    ├── autotyper.desktop   # .desktop launcher template
     └── icons/
         └── io.github.delaytyper.png
 ```
@@ -151,21 +151,21 @@ delay-typer/
 
 ## Usage
 
-1. **Open Delay Typer** from Activities or `python3 run.py`
-2. **Click +** (top right) to add a new task
-3. **Enter your text** (multiline supported)
-4. **Pick when**: Today, Tomorrow, or a specific date via the calendar
-5. **Set the time** with the hour and minute spinners
-6. **Toggle Enter** if you want Enter pressed after the text
-7. **Click Add** — the task appears in the list with a "Pending" badge
-8. **Close the window** — the app keeps running in the background
-9. At the scheduled time, the text is typed into whatever window is focused
+1. Open **Delay Typer** from GNOME Activities or run `delay-typer`
+2. Click **+** (top right) to add a task
+3. Enter your text (multiline supported)
+4. Choose **Today**, **Tomorrow**, or pick a custom date
+5. Set the **hour and minute**
+6. Toggle **"Press Enter after typing"** if needed
+7. Click **Add** — task appears in the list with a "Pending" badge
+8. Close the window — app keeps running in background
+9. At the scheduled time, text is typed into whatever window is focused
 
 ---
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first.
+Pull requests are welcome. For major changes, open an issue first to discuss what you'd like to change.
 
 ---
 
