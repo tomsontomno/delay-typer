@@ -15,14 +15,17 @@ import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 
-from gi.repository import Adw, Gio
+from gi.repository import Adw, Gio, GLib
+
+GLib.set_prgname("io.github.delaytyper")
+GLib.set_application_name("Delay Typer")
 
 from .task_model import TaskStore
 from .scheduler import Scheduler
 from .window import AutoTyperWindow
 
 
-_APP_ICON = "io.github.delaytyper"
+_APP_ICON = "preferences-desktop-keyboard"
 
 
 class AutoTyperApp(Adw.Application):
