@@ -19,7 +19,7 @@
 bash <(curl -fsSL https://raw.githubusercontent.com/tomsontomno/delay-typer/main/install.sh)
 ```
 
-This installs all dependencies, sets up the desktop launcher, and adds a `delay-typer` command to your terminal. No CS degree required.
+This installs all dependencies, sets up the desktop launcher, and adds a `delay-typer` command to your terminal.
 
 > **Requires:** Ubuntu / Debian with Wayland (GNOME). Tested on Ubuntu 22.04+.
 
