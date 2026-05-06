@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.delaytyper</id>
+
+  <name>Delay Typer</name>
+  <summary>Schedule text to be typed into any window at a specific time</summary>
+
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+
+  <description>
+    <p>
+      Delay Typer lets you schedule text to be automatically typed into any
+      focused window at a date and time you choose. Set it up, close the window,
+      and the text will be typed exactly when you told it to.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Schedule multiple typing tasks with individual dates and times</li>
+      <li>Today, Tomorrow, and custom date picker shortcuts</li>
+      <li>Multiline text support</li>
+      <li>Optional Enter key press after typing</li>
+      <li>Runs in the background when the window is closed</li>
+      <li>Works natively on Wayland via the Linux input subsystem</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">io.github.delaytyper.desktop</launchable>
+
+  <url type="homepage">https://github.com/tomsontomno/delay-typer</url>
+  <url type="bugtracker">https://github.com/tomsontomno/delay-typer/issues</url>
+  <url type="vcs-browser">https://github.com/tomsontomno/delay-typer</url>
+
+  <developer id="io.github.tomsontomno">
+    <name>tomsontomno</name>
+  </developer>
+
+  <content_rating type="oars-1.1"/>
+
+  <releases>
+    <release version="1.0.0" date="2025-05-06">
+      <description>
+        <p>Initial release.</p>
+        <ul>
+          <li>Wayland-native keyboard injection via /dev/uinput</li>
+          <li>GTK4 and Libadwaita UI</li>
+          <li>Multiple scheduled tasks with sequential execution</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>Main window showing the task list</caption>
+      <image>https://raw.githubusercontent.com/tomsontomno/delay-typer/main/data/screenshots/main.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Adding a new typing task</caption>
+      <image>https://raw.githubusercontent.com/tomsontomno/delay-typer/main/data/screenshots/add-task.png</image>
+    </screenshot>
+  </screenshots>
+
+  <provides>
+    <binary>delay-typer</binary>
+  </provides>
+
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+  </recommends>
+</component>

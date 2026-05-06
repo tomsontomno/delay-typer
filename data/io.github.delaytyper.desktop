@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Delay Typer
+GenericName=Scheduled Text Typer
+Comment=Schedule text to be typed automatically at a specific date and time
+Exec=delay-typer
+Icon=io.github.delaytyper
+Type=Application
+Categories=Utility;Accessibility;
+Keywords=type;typing;schedule;timer;keyboard;automation;
+StartupNotify=true
+StartupWMClass=delay-typer
+SingleMainWindow=true
