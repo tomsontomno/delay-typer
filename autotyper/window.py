@@ -153,19 +153,36 @@ class AutoTyperWindow(Adw.ApplicationWindow):
                 enter_icon.set_valign(Gtk.Align.CENTER)
                 row.add_suffix(enter_icon)
 
-            # Delete button (only for pending tasks)
+            # Action buttons (right side)
+            task_id = task.id
+
             if task.status == TaskStatus.PENDING:
-                delete_btn = Gtk.Button(
-                    icon_name="user-trash-symbolic",
-                    tooltip_text="Remove task",
+                # Stop button — cancels the task (keeps it in list as Cancelled)
+                stop_btn = Gtk.Button(
+                    icon_name="media-playback-stop-symbolic",
+                    tooltip_text="Cancel task",
                     valign=Gtk.Align.CENTER,
                     css_classes=["flat", "circular"],
                 )
-                task_id = task.id
+                stop_btn.connect(
+                    "clicked",
+                    lambda _, tid=task_id: self._store.update_status(tid, TaskStatus.CANCELLED),
+                )
+                row.add_suffix(stop_btn)
+
+            if task.status in (TaskStatus.CANCELLED, TaskStatus.DONE, TaskStatus.FAILED):
+                # Trash button — removes the task from the list entirely
+                delete_btn = Gtk.Button(
+                    icon_name="user-trash-symbolic",
+                    tooltip_text="Remove from list",
+                    valign=Gtk.Align.CENTER,
+                    css_classes=["flat", "circular"],
+                )
                 delete_btn.connect("clicked", lambda _, tid=task_id: self._store.remove(tid))
                 row.add_suffix(delete_btn)
 
             self._list_box.append(row)
+
 
     def _on_add_clicked(self, _button: Gtk.Button) -> None:
         """Open the Add Task dialog."""

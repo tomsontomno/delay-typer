@@ -15,18 +15,14 @@ import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 
-from gi.repository import Adw, Gio, GLib, GdkPixbuf
+from gi.repository import Adw, Gio
 
 from .task_model import TaskStore
 from .scheduler import Scheduler
 from .window import AutoTyperWindow
 
 
-# Icon path: relative to this file → data/icons/io.github.delaytyper.png
-_ICON_PATH = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "data", "icons", "io.github.delaytyper.png"
-)
+_APP_ICON = "io.github.delaytyper"
 
 
 class AutoTyperApp(Adw.Application):
@@ -42,14 +38,6 @@ class AutoTyperApp(Adw.Application):
             application_id="io.github.delaytyper",
             flags=Gio.ApplicationFlags.FLAGS_NONE,
         )
-        # Set app icon for taskbar / app switcher
-        if os.path.exists(_ICON_PATH):
-            try:
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file(_ICON_PATH)
-                Gtk = __import__('gi.repository', fromlist=['Gtk']).Gtk
-                Gtk.Window.set_default_icon(pixbuf)
-            except Exception:
-                pass
         self._store = TaskStore()
         self._scheduler = Scheduler(self._store)
         self._window: AutoTyperWindow | None = None
@@ -60,8 +48,8 @@ class AutoTyperApp(Adw.Application):
             self._window = AutoTyperWindow(
                 store=self._store,
                 application=self,
-                title="Delay Typer",
             )
+            self._window.set_icon_name(_APP_ICON)
             # Hold keeps the app alive when the window is hidden
             self.hold()
             # Start the background scheduler
