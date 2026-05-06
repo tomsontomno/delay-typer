@@ -25,8 +25,6 @@ from .scheduler import Scheduler
 from .window import AutoTyperWindow
 
 
-_APP_ICON = "preferences-desktop-keyboard"
-
 
 class AutoTyperApp(Adw.Application):
     """Main Adwaita application.
@@ -52,7 +50,6 @@ class AutoTyperApp(Adw.Application):
                 store=self._store,
                 application=self,
             )
-            self._window.set_icon_name(_APP_ICON)
             # Hold keeps the app alive when the window is hidden
             self.hold()
             # Start the background scheduler
