@@ -54,6 +54,14 @@ It runs **natively on Wayland** (including GNOME on Ubuntu, Fedora, etc.) using 
 
 ---
 
+## Screenshots
+
+| Task List | Add Task | Empty State |
+|:-:|:-:|:-:|
+| ![Task list](data/screenshots/task-list.png) | ![Add task dialog](data/screenshots/add-task.png) | ![Empty state](data/screenshots/empty-state.png) |
+
+---
+
 ## Manual Installation
 
 If you prefer to install manually:

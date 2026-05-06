@@ -52,12 +52,16 @@
 
   <screenshots>
     <screenshot type="default">
-      <caption>Main window showing the task list</caption>
-      <image>https://raw.githubusercontent.com/tomsontomno/delay-typer/main/data/screenshots/main.png</image>
+      <caption>Scheduled tasks with status indicators</caption>
+      <image>https://raw.githubusercontent.com/tomsontomno/delay-typer/main/data/screenshots/task-list.png</image>
     </screenshot>
     <screenshot>
       <caption>Adding a new typing task</caption>
       <image>https://raw.githubusercontent.com/tomsontomno/delay-typer/main/data/screenshots/add-task.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Empty state</caption>
+      <image>https://raw.githubusercontent.com/tomsontomno/delay-typer/main/data/screenshots/empty-state.png</image>
     </screenshot>
   </screenshots>
 
