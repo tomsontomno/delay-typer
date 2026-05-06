@@ -78,7 +78,7 @@ cp "$INSTALL_DIR/data/icons/io.github.delaytyper.png" \
 
 # ---- Install .desktop launcher ----
 mkdir -p "$DESKTOP_DIR"
-cat > "$DESKTOP_DIR/delay-typer.desktop" << EOF
+cat > "$DESKTOP_DIR/io.github.delaytyper.desktop" << EOF
 [Desktop Entry]
 Name=Delay Typer
 GenericName=Scheduled Text Typer
